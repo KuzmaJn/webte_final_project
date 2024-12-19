@@ -1,9 +1,9 @@
 <script setup>
-
+import Home from "@/components/Home.vue";
 </script>
 
 <template>
-  <h1>Hello</h1>
+  <home></home>
 </template>
 
 <style scoped>
