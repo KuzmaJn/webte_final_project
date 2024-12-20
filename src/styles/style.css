@@ -1,13 +1,37 @@
-/*TODO: import font*/
-
+@font-face {
+    font-family: 'Headers';
+    src: url('../assets/fonts/PressStart2P-Regular.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'VT-Regular';
+    src: url('../assets/fonts/VT323-Regular.ttf') format('truetype');
+}
 body{
+    font-family: 'VT-Regular', sans-serif;
     background-color: black;
-    display: flex;
-    justify-content: center;
+    margin: 0;
 }
 
-#app{
-    flex: 1 1 auto;
+h1, h2, h3, h4, h5, h6{
+    font-family: 'Headers', 'VT-Regular', sans-serif;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-width: 100%;
     background-color: white;
     border-radius: 0.5rem;
+}
+
+main {
+    flex-grow: 1;
+}
+
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px;
 }
