@@ -1,0 +1,13 @@
+/*TODO: import font*/
+
+body{
+    background-color: black;
+    display: flex;
+    justify-content: center;
+}
+
+#app{
+    flex: 1 1 auto;
+    background-color: white;
+    border-radius: 0.5rem;
+}
