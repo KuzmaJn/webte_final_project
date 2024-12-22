@@ -41,6 +41,6 @@
   .modal > div {
     background-color: #ffffff;
     padding: 5rem;
-    border-radius: 1rem;
+    border-radius: 0.5rem;
   }
 </style>

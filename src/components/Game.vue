@@ -22,6 +22,6 @@
     height: 10rem;
     background-color: aliceblue;
     margin: 1rem;
-    border-radius: 1rem;
+    border-radius: 0.5rem;
   }
 </style>

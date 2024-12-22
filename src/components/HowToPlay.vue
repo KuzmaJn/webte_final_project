@@ -45,9 +45,10 @@ const nextSlide = () => {
 
 <template>
   <div class="slideshow">
-    <transition name="slide" mode="out-in">
+    <transition name="fade">
       <RuleBlock @click="nextSlide" :key="rules[currentIndex].title" :title="rules[currentIndex].title">
         <div v-html="rules[currentIndex].content"></div>
+        <span class="tooltip">Hint: klik</span>
       </RuleBlock>
     </transition>
   </div>
@@ -62,32 +63,26 @@ const nextSlide = () => {
   gap: 1rem;
 }
 
-.slide-enter-active,
-.slide-leave-active {
-  transition: transform 0.5s ease, opacity 0.5s ease;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
 }
 
-.slide-enter-from {
-  transform: translateX(100%);
-  opacity: 0;
-}
-
-.slide-leave-to {
-  transform: translateX(-100%);
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
 }
 
 p {
   margin: 0;
   padding: 0.2rem;
-  max-width: 21rem;
+  max-width: 95%;
 }
 
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 0.75rem;
-  width: 20rem;
 }
 
 .empty {
@@ -100,7 +95,6 @@ p {
   justify-content: center;
   align-items: center;
   background-color: #959595;
-  color: #ffffff;
   border-radius: 0.5rem;
   height: 3rem;
   font-weight: bold;
@@ -113,5 +107,20 @@ p {
 .used {
   background-color: #00cfff;
   color: #000;
+}
+
+.tooltip {
+  position: absolute;
+  bottom: -2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  text-shadow: #ffff3c 0 0 0.5rem;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.rule:hover .tooltip {
+  display: block;
 }
 </style>
