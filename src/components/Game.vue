@@ -1,27 +1,41 @@
 <script setup>
-  import { defineProps, defineEmits } from 'vue';
+import {defineEmits, defineProps} from 'vue';
 
-  defineProps({
-    title: String,
+defineProps({
     msg: String,
   })
   defineEmits("close")
 </script>
 
 <template>
-  <div>
-    <h3>{{ title }}</h3>
+  <div class="flex title">
     <p>{{ msg }}</p>
-    <button @click="$emit('close')">Close</button>
+    <button @click="$emit('close')">✖</button>
+  </div>
+  <div ref="gameContainer" class="flex game-container">
+    <canvas ref="gameCanvas"></canvas>
   </div>
 </template>
 
 <style scoped>
-  div {
-    width: 10rem;
-    height: 10rem;
-    background-color: aliceblue;
-    margin: 1rem;
-    border-radius: 0.5rem;
-  }
+.flex{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.title {
+  flex: 0 1 auto;
+  width: 100%;
+  justify-content: space-between;
+}
+.game-container{
+  flex: 1 1 auto;
+  width: 100%;
+}
+.game-container > canvas{
+  background-color: #000000;
+  margin: 1rem;
+  border-radius: 0.5rem;
+}
 </style>

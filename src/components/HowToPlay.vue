@@ -1,6 +1,6 @@
 <script setup>
 import RuleBlock from "@/components/RuleBlock.vue";
-import { ref } from "vue";
+import {ref} from "vue";
 
 const rules = ref([
   {

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import {ref} from 'vue';
 
 const isModalOpen = ref(false);
 const toggleModal = () => {
@@ -92,7 +92,7 @@ nav ul {
   padding: 1.25rem 1rem 1.25rem 1rem;
 }
 
-.desktop-menu > li > a.router-link-active {
+li > a.router-link-active {
   color: #82b8ff;
   font-weight: bolder;
 }
@@ -136,7 +136,7 @@ nav ul {
   font-size: 2.5rem;
 }
 
-.modal-content ul li a:hover {
+.modal-content ul li a:hover, .close-icon:hover {
   color: #82b8ff;
 }
 
