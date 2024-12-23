@@ -2,6 +2,23 @@
 import RuleBlock from "@/components/RuleBlock.vue";
 import {ref} from "vue";
 
+const isTooltipVisible = ref(false);
+let timeout;
+
+const showTooltip = () => {
+  isTooltipVisible.value = true;
+
+  clearTimeout(timeout);
+  timeout = setTimeout(() => {
+    isTooltipVisible.value = false;
+  }, 3000);
+};
+
+const hideTooltip = () => {
+  isTooltipVisible.value = false;
+  clearTimeout(timeout);
+};
+
 const rules = ref([
   {
     title: "Cieľ hry",
@@ -18,12 +35,12 @@ const rules = ref([
     content: `
       <div class="grid">
         <div class="empty"></div>
-        <div class="key">W</div>
+        <div class="flex key">W</div>
         <div class="empty"></div>
-        <div class="used key">A</div>
-        <div class="key">S</div>
-        <div class="used key">D</div>
-        <div class="used key space">SPACE</div>
+        <div class="flex used key">A</div>
+        <div class="flex key">S</div>
+        <div class="flex used key">D</div>
+        <div class="flex used key space">SPACE</div>
       </div>
       <p>A, D: pohyb hráča <br> SPACE: streľanie projektilov</p>
     `,
@@ -44,22 +61,20 @@ const nextSlide = () => {
 </script>
 
 <template>
-  <div class="slideshow">
+  <div @mouseenter="showTooltip" @mouseleave="hideTooltip" class="flex slideshow">
     <transition name="fade">
       <RuleBlock @click="nextSlide" :key="rules[currentIndex].title" :title="rules[currentIndex].title">
+        <span v-if="isTooltipVisible" class="tooltip">Hint: klik</span>
         <div v-html="rules[currentIndex].content"></div>
-        <span class="tooltip">Hint: klik</span>
       </RuleBlock>
     </transition>
   </div>
 </template>
 
 <style>
+@import "@/styles/utils.css";
+
 .slideshow {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
   gap: 1rem;
 }
 
@@ -74,9 +89,8 @@ const nextSlide = () => {
 }
 
 p {
-  margin: 0;
+  margin: 0.1rem;
   padding: 0.2rem;
-  max-width: 95%;
 }
 
 .grid {
@@ -91,9 +105,6 @@ p {
 }
 
 .key {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   background-color: #959595;
   border-radius: 0.5rem;
   height: 3rem;
@@ -111,16 +122,12 @@ p {
 
 .tooltip {
   position: absolute;
-  bottom: -2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  display: none;
-  text-shadow: #ffff3c 0 0 0.5rem;
+  left: 0.5rem;
+  top: 1.2rem;
+  display: block;
   color: #fff;
   white-space: nowrap;
-}
-
-.rule:hover .tooltip {
-  display: block;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 0.25rem;
 }
 </style>

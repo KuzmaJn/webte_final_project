@@ -19,27 +19,38 @@ h1, h2, h3, h4, h5, h6{
 #app {
     background: url('/src/assets/images/background-image.png') no-repeat center center fixed;
     background-size: cover;
-    display: flex;
-    flex-direction: column;
     min-height: 100vh;
     min-width: 100%;
+    align-items: initial;
 }
 
-main{
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    flex: 1 1 auto;
+h1 {
+    font-size: clamp(1.5em, 5vw, 3rem);
 }
 
-footer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    background-color: #000;
-    padding:  0 1rem 0 1rem;
-    box-shadow: 0 -2px 4px rgba(255, 255, 255, 0.1);
+h2 {
+    font-size: clamp(1.1em, 4vw, 1.5rem);
 }
+
+h3 {
+    font-size: clamp(1em, 3vw, 1.25rem);
+}
+
+h4 {
+    font-size: clamp(0.8rem, 3vw, 1.1rem);
+}
+
+h5 {
+    font-size: clamp(0.6rem, 2.5vw, 1rem);
+}
+
+h6 {
+    font-size: clamp(0.5rem, 2vw, 0.9em);
+}
+p {
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+}
+a {
+    font-size: clamp(1.5rem, 3vw, 1.75rem);
+}
+

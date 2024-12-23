@@ -10,34 +10,41 @@ defineProps({
 </script>
 
 <template>
-  <div class="rule">
-    <h3> {{ title }} </h3>
-    <div class="content">
+  <div class="rule flex-initial flex-column blur-bg my-padding1">
+    <h2 class="my-padding0"> {{ title }} </h2>
+    <div class="content flex flex-column">
       <slot></slot>
     </div>
   </div>
 </template>
 
 <style scoped>
+@import "@/styles/utils.css";
+
 .rule{
-  position: fixed;
-  width: 32rem;
-  max-width: 80vw;
-  height: 21rem;
-  display: flex;
-  flex-direction: column;
   align-items: center;
+  box-sizing: border-box;
+  overflow: auto;
+  position: fixed;
+  width: 80vw;
+  height: 60vh;
   background-color: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(0.25rem);
   border-radius: 0.5rem;
-  margin: 0.5rem;
-  padding: 0.5rem;
 }
 .content{
-  font-size: 1.4rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-  width: 75%;
+  gap: 0.2rem;
+  width: 100%;
+}
+
+@media(min-width: 480px) {
+  .rule{
+    max-width: 24rem;
+  }
+}
+
+@media(min-width: 768px) {
+  .rule{
+    max-width: 32rem;
+  }
 }
 </style>

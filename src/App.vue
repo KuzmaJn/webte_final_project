@@ -11,34 +11,36 @@ const closeModal = () => {
 </script>
 
 <template>
-<nav class="flex background-style">
-  <h2 class="item"><router-link to="/">Spaceship vs aliens</router-link></h2>
-  <ul class="flex item desktop-menu">
-    <li><router-link to="/">Hraj hru</router-link></li>
-    <li><router-link to="/how-to-play">Pravidlá</router-link></li>
+<nav class="flex flex-between blur-bg my-padding1">
+  <router-link class="nav-link my-padding0 main-header" to="/"><h2 class="my-padding0">Spaceship vs aliens</h2></router-link>
+  <button class="hamburger my-padding0" @click="toggleModal">☰</button>
+  <ul class="flex nav-list desktop-menu">
+    <li><router-link class="nav-link my-padding1" to="/">Hraj hru</router-link></li>
+    <li><router-link class="nav-link my-padding1" to="/how-to-play">Pravidlá</router-link></li>
   </ul>
-  <button class="item hamburger" @click="toggleModal">☰</button>
 </nav>
 
-<!-- Modálne okno -->
+<!-- Modálne menu -->
 <transition name="fade">
   <div v-if="isModalOpen" class="modal">
-    <div class="flex background-style modal-content" @click="closeModal">
-      <button class="close-icon" @click="closeModal">✖</button>
-      <ul class="flex">
-        <li><router-link to="/" @click="closeModal">Hraj hru</router-link></li>
-        <li><router-link to="/how-to-play" @click="closeModal">Pravidlá</router-link></li>
+    <div class="flex flex-column blur-bg modal-content" @click="closeModal">
+      <button class="close-icon nav-link" @click="closeModal">✖</button>
+      <ul class="flex flex-column nav-list">
+        <li><router-link class="nav-link" to="/" @click="closeModal">Hraj hru</router-link></li>
+        <li><router-link class="nav-link" to="/how-to-play" @click="closeModal">Pravidlá</router-link></li>
       </ul>
     </div>
   </div>
 </transition>
 
-<main>
-  <transition name="fade">
-    <router-view />
-  </transition>
+<main class="flex">
+  <router-view v-slot="{ Component }">
+    <transition name="fade">
+      <component :is="Component" />
+    </transition>
+  </router-view>
 </main>
-<footer>
+<footer class="flex">
   <h5>
     This is developed using Vue and Vite
   </h5>
@@ -46,6 +48,20 @@ const closeModal = () => {
 </template>
 
 <style scoped>
+@import "@/styles/utils.css";
+
+main{
+  position: relative;
+  flex: 1 1 auto;
+}
+
+footer {
+  text-align: center;
+  background-color: #000;
+  padding:  0 1rem 0 1rem;
+  box-shadow: 0 -2px 4px rgba(255, 255, 255, 0.1);
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.2s ease;
@@ -56,40 +72,15 @@ const closeModal = () => {
   opacity: 0;
 }
 
-.flex {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+.main-header {
+  font-size: clamp(1.1em, 4vw, 1.5rem); /* Dynamické prispôsobenie s rem a em */
 }
-.background-style {
-  background-color: rgba(255, 255, 255, 0.0);
-  backdrop-filter: blur(0.25rem);
-}
-
-a {
-  text-decoration: none;
-  color: #FFF;
-  font-size: 1.5rem;
-}
-nav {
-  justify-content: space-between;
-  padding: 1.25rem 1rem 1.25rem 1rem;
-}
-
-nav h2 {
-  flex: 3 1 auto;
-  margin: 0;
-}
-nav ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.desktop-menu{
+  display: none;
 }
 
 .desktop-menu > li > a {
-  text-decoration: none;
   transition: border-bottom 0.2s linear, color 0.5s ease;
-  padding: 1.25rem 1rem 1.25rem 1rem;
 }
 
 li > a.router-link-active {
@@ -102,70 +93,33 @@ li > a.router-link-active {
 }
 
 .hamburger {
-  display: none;
-}
-
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 1000;
+  background: none;
+  border: none;
+  display: block;
+  font-size: 1.5rem;
+  color: white;
+  cursor: pointer;
+  margin: 0 0 0 2rem;
 }
 
 .modal-content {
   position: relative;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(0, 0, 0, 0.4);
   width: 100%;
   height: 100%;
-}
-
-.modal-content ul {
-  flex-direction: column;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.modal-content ul li a {
-  color: #000000;
-  font-size: 2.5rem;
 }
 
 .modal-content ul li a:hover, .close-icon:hover {
   color: #82b8ff;
 }
 
-.close-icon {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  font-size: 3rem;
-  background: none;
-  border: none;
-  color: black;
-  cursor: pointer;
-}
-
 /* Responzívne štýly */
-@media (max-width: 768px) {
-  nav > h2 > a{
-    font-size: large;
-  }
+@media (min-width: 768px) {
   .hamburger {
-    display: block;
-    font-size: 2rem;
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
+    display: none;
   }
   .desktop-menu{
-    display: none;
+    display: flex;
   }
 }
 </style>
