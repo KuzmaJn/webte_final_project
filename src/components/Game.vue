@@ -1,6 +1,6 @@
 <script setup>
 import {defineEmits} from 'vue';
-import { ref, reactive, onMounted, onBeforeUnmount } from 'vue';
+import { ref, reactive, onMounted, onUnmounted } from 'vue';
 import p5 from 'p5';
 import Player from '@/assets/images/player.png';
 import Red from '@/assets/images/red.png';
@@ -10,81 +10,123 @@ import Extra from '@/assets/images/extra.png';
 
 defineEmits(["close"])
 
-const canvasContainer = ref(null);
-let p5Instance = null;
+let width = window.innerWidth - 100;
+let height = window.innerHeight -100;
+let player, enemyRed, enemyYellow, enemyGreen, enemyExtra, bullet;
+let score = ref(0);
+let bullets = [];
 
 const sketch = (p) => {
-  let player;
-  let playerImage;
-
-  // Inicializácia
   p.preload = () => {
-    // Načítanie obrázka hráča
-    playerImage = p.loadImage(Player);
+    player = {x: width / 2 - 30, y: height * 7 / 9, lives: 3, image: p.loadImage(Player)};
+    enemyRed = p.loadImage(Red);
+    enemyYellow = p.loadImage(Yellow);
+    enemyGreen = p.loadImage(Green);
+    enemyExtra = p.loadImage(Extra);
+    bullet = {x: player.x + 28, y: player.y}
   };
 
   p.setup = () => {
-    p.createCanvas(window.innerWidth, window.innerHeight);
-
-    // Inicializácia hráča
-    player = {
-      x: p.width / 2,
-      y: p.height - 100,
-      width: 50,
-      height: 50,
-    };
+    let canvas = p.createCanvas(width, height);
+    let gameContainer = p.select('#game-container');
+    let scoreSpan = p.select('#score');
+    p.frameRate(60);
   };
 
   p.draw = () => {
     p.background(0);
 
-    // Vykreslenie hráča ako obrázku
-    p.image(playerImage, player.x, player.y, player.width, player.height);
-
-    // Pohyb hráča
-    if (p.keyIsDown(p.LEFT_ARROW)) {
-      player.x -= 5;
+    if(p.keyIsDown(65)){
+      p.moveLeft();
     }
-    if (p.keyIsDown(p.RIGHT_ARROW)) {
-      player.x += 5;
+    if(p.keyIsDown(68)){
+      p.moveRight();
     }
 
-    // Strela (len na demonštráciu, nie plne implementované)
     if (p.keyIsDown(32)) {
-      p.fill(255);
-      p.ellipse(player.x + player.width / 2, player.y - 10, 10, 10);
+      if (!p._shooting) {
+        p.shootBullet();
+        p._shooting = true;
+      }
+    } else {
+      p._shooting = false;
+    }
+
+    p.updateBullets();
+    p.drawBullets();
+    p.drawPlayer();
+  };
+
+  p.drawPlayer = () => {
+    p.image(player.image, player.x, player.y);
+  };
+
+  p.shootBullet = () => {
+    bullets.push({ x: player.x + 30, y: player.y - 16 });
+  };
+
+  p.updateBullets = () => {
+    for (let i = bullets.length - 1; i >= 0; i--) {
+      bullets[i].y -= 10;
+
+      if (bullets[i].y < 0) {
+        bullets.splice(i, 1);
+      }
     }
   };
 
-  // Reagovanie na zmenu veľkosti okna
-  p.windowResized = () => {
-    p.resizeCanvas(window.innerWidth, window.innerHeight);
+  p.drawBullets = () => {
+    bullets.forEach((bullet) => {
+      p.fill(255, 0, 0);
+      p.noStroke();
+      p.rect(bullet.x, bullet.y, 4, 16);
+    });
+  };
+
+  p.moveLeft = () => {
+    if(player.x > 9){
+      player.x -= 5;
+    }
+  };
+
+  p.moveRight = () => {
+    if(player.x < width - 69){
+      player.x += 5;
+    }
   };
 };
 
+
+const canvasRef = ref(null);
+let p5Instance = null;
+
+
 onMounted(() => {
-  // Inicializácia P5.js
-  p5Instance = new p5(sketch, canvasContainer.value);
+  p5Instance = new p5(sketch, canvasRef.value);
 });
 
-onBeforeUnmount(() => {
-  // Zničenie P5.js instance pri odchode z komponentu
-  p5Instance.remove();
+
+onUnmounted(() => {
+  if (p5Instance) {
+    p5Instance.remove();
+  }
 });
 </script>
 
 <template>
-  <div class="flex flex-between title">
-    <button class="close-icon nav-link" @click="$emit('close')">✖</button>
+  <div class="flex flex-between title" id="menu-container">
+    <p id="score"> Skóre: {{score}} </p>
+    <button class="nav-link" @click="$emit('close')">✖</button>
   </div>
 
-  <div ref="canvasContainer" class="flex game-container"></div>
+  <div ref="canvasRef" class="flex flex-column game-container" id="game-container"></div>
 </template>
 
 <style scoped>
 @import "@/styles/utils.css";
 
 .title {
+  width: 100vw;
   flex: 0 1 auto;
 }
 .game-container{
@@ -93,8 +135,6 @@ onBeforeUnmount(() => {
   height: 100vh;
 }
 .game-container > canvas{
-  background-color: #000000;
-  margin: 1rem;
-  border-radius: 0.5rem;
+  display: block;
 }
 </style>

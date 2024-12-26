@@ -24,4 +24,7 @@ const isOpen = ref(false);
   position: relative;
 }
 
+.modal{
+  background-color: rgba(0, 0, 0, 0.75);
+}
 </style>
