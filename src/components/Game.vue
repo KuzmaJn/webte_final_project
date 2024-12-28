@@ -1,6 +1,6 @@
 <script setup>
 import {defineEmits} from 'vue';
-import { ref, reactive, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import p5 from 'p5';
 import Player from '@/assets/images/player.png';
 import Red from '@/assets/images/red.png';
@@ -10,32 +10,48 @@ import Extra from '@/assets/images/extra.png';
 
 defineEmits(["close"])
 
-let width = window.innerWidth - 100;
-let height = window.innerHeight -100;
-let player, enemyRed, enemyYellow, enemyGreen, enemyExtra, bullet;
+let width = window.innerWidth * 3/4;
+let height = window.innerHeight;
+let player, enemyRed, enemyYellow, enemyGreen, enemyExtra, gameStarted;
 let score = ref(0);
 let bullets = [];
+const isPaused = ref(false);
+const wasPaused = ref(true);
+let countdown = ref(3);
 
 const sketch = (p) => {
   p.preload = () => {
-    player = {x: width / 2 - 30, y: height * 7 / 9, lives: 3, image: p.loadImage(Player)};
+    player = {x: width / 2 - 30, y: height * 8 / 9, lives: 3, image: p.loadImage(Player)};
     enemyRed = p.loadImage(Red);
     enemyYellow = p.loadImage(Yellow);
     enemyGreen = p.loadImage(Green);
     enemyExtra = p.loadImage(Extra);
-    bullet = {x: player.x + 28, y: player.y}
   };
 
   p.setup = () => {
     let canvas = p.createCanvas(width, height);
-    let gameContainer = p.select('#game-container');
-    let scoreSpan = p.select('#score');
     p.frameRate(60);
   };
 
   p.draw = () => {
-    p.background(0);
+    if (wasPaused.value && countdown.value > 0) {
+      p.textAlign(p.CENTER, p.CENTER);
+      p.background(0);
+      p.textSize(64);
+      p.fill(255);
+      p.text(countdown.value, p.width / 2, p.height / 2);
 
+      if (p.frameCount % 60 === 0) {
+        countdown.value--;
+      }
+
+      if (countdown.value === 0) {
+        wasPaused.value = false;
+      }
+      return;
+    }
+
+    p.background(0);
     if(p.keyIsDown(65)){
       p.moveLeft();
     }
@@ -58,16 +74,16 @@ const sketch = (p) => {
   };
 
   p.drawPlayer = () => {
-    p.image(player.image, player.x, player.y);
+    p.image(player.image, player.x, player.y, player.image.width * 2/3, player.image.height * 2/3);
   };
 
   p.shootBullet = () => {
-    bullets.push({ x: player.x + 30, y: player.y - 16 });
+    bullets.push({x: player.x + (player.image.width * 1/3)-2, y: player.y});
   };
 
   p.updateBullets = () => {
     for (let i = bullets.length - 1; i >= 0; i--) {
-      bullets[i].y -= 10;
+      bullets[i].y -= 8;
 
       if (bullets[i].y < 0) {
         bullets.splice(i, 1);
@@ -90,12 +106,21 @@ const sketch = (p) => {
   };
 
   p.moveRight = () => {
-    if(player.x < width - 69){
+    if(player.x < width - 49){
       player.x += 5;
     }
   };
 };
-
+const togglePause = () => {
+  if (isPaused.value) {
+    p5Instance.loop();
+  } else {
+    p5Instance.noLoop();
+  }
+  isPaused.value = !isPaused.value;
+  wasPaused.value = true;
+  countdown.value = 3;
+};
 
 const canvasRef = ref(null);
 let p5Instance = null;
@@ -111,12 +136,26 @@ onUnmounted(() => {
     p5Instance.remove();
   }
 });
+
+// rusi aby pause/play spustilo stlacenie medzerniku, lebo sa pouziva na strelanie
+document.addEventListener('keydown', (event) => {
+  if (event.code === 'Space' && document.activeElement.tagName === 'BUTTON') {
+    event.preventDefault();
+  }
+});
 </script>
 
 <template>
   <div class="flex flex-between title" id="menu-container">
-    <p id="score"> Skóre: {{score}} </p>
-    <button class="nav-link" @click="$emit('close')">✖</button>
+    <div class="flex flex-column stats">
+      <p id="score">Skóre: {{score}} <br>Životy: </p>
+    </div>
+    <div class="flex flex-column menu">
+      <button class="nav-link icon" @click="togglePause">{{isPaused ? '▶' : '❚❚' }}</button>
+      <button class="nav-link icon" @click="">↺</button>
+      <button class="nav-link icon" @click="$emit('close')">✖</button>
+    </div>
+
   </div>
 
   <div ref="canvasRef" class="flex flex-column game-container" id="game-container"></div>
@@ -124,10 +163,20 @@ onUnmounted(() => {
 
 <style scoped>
 @import "@/styles/utils.css";
-
 .title {
+  position: absolute;
   width: 100vw;
   flex: 0 1 auto;
+}
+
+.menu {
+  justify-content: space-between;
+  align-items: initial;
+  padding: 1rem;
+}
+
+.stats{
+  padding: 1rem;
 }
 .game-container{
   flex: 1 1 auto;

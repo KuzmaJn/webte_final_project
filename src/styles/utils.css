@@ -64,3 +64,10 @@
     border: none;
     cursor: pointer;
 }
+
+.icon {
+    font-size: 2rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+}

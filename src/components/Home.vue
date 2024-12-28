@@ -25,6 +25,6 @@ const isOpen = ref(false);
 }
 
 .modal{
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: rgba(0, 0, 0, 0.55);
 }
 </style>
