@@ -1,0 +1,96 @@
+[
+  {
+    "level": 1,
+    "enemies": [
+      { "type": "red", "speed": 2, "lives": 1, "delay": 0 },
+      { "type": "red", "speed": 2, "lives": 1, "delay": 60 }
+    ]
+  },
+  {
+    "level": 2,
+    "enemies": [
+      { "type": "yellow", "speed": 2, "lives": 2, "delay": 0 },
+      { "type": "red", "speed": 2.5, "lives": 1, "delay": 30 },
+      { "type": "red", "speed": 2, "lives": 1, "delay": 90 }
+    ]
+  },
+  {
+    "level": 3,
+    "enemies": [
+      { "type": "green", "speed": 2.5, "lives": 3, "delay": 0 },
+      { "type": "yellow", "speed": 2, "lives": 2, "delay": 50 },
+      { "type": "red", "speed": 2.5, "lives": 1, "delay": 100 }
+    ]
+  },
+  {
+    "level": 4,
+    "enemies": [
+      { "type": "green", "speed": 3, "lives": 3, "delay": 0 },
+      { "type": "green", "speed": 3, "lives": 3, "delay": 40 },
+      { "type": "yellow", "speed": 2.5, "lives": 2, "delay": 80 },
+      { "type": "red", "speed": 2.5, "lives": 1, "delay": 120 }
+    ]
+  },
+  {
+    "level": 5,
+    "enemies": [
+      { "type": "extra", "speed": 2, "lives": 1, "delay": 0 },
+      { "type": "green", "speed": 3, "lives": 3, "delay": 50 },
+      { "type": "yellow", "speed": 3, "lives": 2, "delay": 100 },
+      { "type": "red", "speed": 2.5, "lives": 1, "delay": 150 }
+    ]
+  },
+  {
+    "level": 6,
+    "enemies": [
+      { "type": "extra", "speed": 2.5, "lives": 1, "delay": 0 },
+      { "type": "extra", "speed": 2.5, "lives": 1, "delay": 60 },
+      { "type": "green", "speed": 3.5, "lives": 3, "delay": 120 },
+      { "type": "yellow", "speed": 3, "lives": 2, "delay": 180 },
+      { "type": "red", "speed": 3, "lives": 1, "delay": 240 }
+    ]
+  },
+  {
+    "level": 7,
+    "enemies": [
+      { "type": "extra", "speed": 3, "lives": 1, "delay": 0 },
+      { "type": "green", "speed": 3.5, "lives": 3, "delay": 40 },
+      { "type": "green", "speed": 3.5, "lives": 3, "delay": 80 },
+      { "type": "yellow", "speed": 3.5, "lives": 2, "delay": 120 },
+      { "type": "red", "speed": 3, "lives": 1, "delay": 160 }
+    ]
+  },
+  {
+    "level": 8,
+    "enemies": [
+      { "type": "extra", "speed": 3.5, "lives": 1, "delay": 0 },
+      { "type": "extra", "speed": 3.5, "lives": 1, "delay": 50 },
+      { "type": "green", "speed": 4, "lives": 3, "delay": 100 },
+      { "type": "yellow", "speed": 3.5, "lives": 2, "delay": 150 },
+      { "type": "yellow", "speed": 3.5, "lives": 2, "delay": 200 },
+      { "type": "red", "speed": 3.5, "lives": 1, "delay": 250 }
+    ]
+  },
+  {
+    "level": 9,
+    "enemies": [
+      { "type": "extra", "speed": 4, "lives": 1, "delay": 0 },
+      { "type": "extra", "speed": 4, "lives": 1, "delay": 40 },
+      { "type": "green", "speed": 4, "lives": 3, "delay": 80 },
+      { "type": "green", "speed": 4.5, "lives": 3, "delay": 120 },
+      { "type": "yellow", "speed": 4, "lives": 2, "delay": 160 },
+      { "type": "red", "speed": 3.5, "lives": 1, "delay": 200 }
+    ]
+  },
+  {
+    "level": 10,
+    "enemies": [
+      { "type": "extra", "speed": 5, "lives": 1, "delay": 0 },
+      { "type": "extra", "speed": 5, "lives": 1, "delay": 30 },
+      { "type": "green", "speed": 4.5, "lives": 3, "delay": 60 },
+      { "type": "green", "speed": 5, "lives": 3, "delay": 90 },
+      { "type": "yellow", "speed": 4.5, "lives": 2, "delay": 120 },
+      { "type": "red", "speed": 4, "lives": 1, "delay": 150 }
+    ]
+  }
+]
