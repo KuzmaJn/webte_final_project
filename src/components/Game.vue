@@ -8,6 +8,7 @@ import Yellow from '@/assets/images/yellow.png';
 import Green from '@/assets/images/green.png';
 import Extra from '@/assets/images/extra.png';
 import levels from '@/assets/levels.json'; // Súbor JSON s informáciami o úrovniach
+import { useGameStateStore } from '@/store/gameState';
 
 const emit = defineEmits(['close']);
 
@@ -27,6 +28,8 @@ let levelCompleted = ref(false); // Pridaná premenná pre kontrolu dokončenia 
 let gameOver = ref(false);
 let gameOverMessage = ref('');
 let pendingEnemies = [];
+const gameStateStore = useGameStateStore();
+
 
 
 
@@ -45,19 +48,6 @@ const handleDeviceOrientation = (event) => {
   }
 };
 
-const saveGameState = () => {
-  console.log('Saving game state:', {
-    level: currentLevel.value,
-    score: score.value,
-    lives: lives.value,
-  });
-  const gameState = {
-    level: currentLevel.value,
-    score: score.value,
-    lives: lives.value,
-  };
-  localStorage.setItem('gameState', JSON.stringify(gameState));
-};
 
 
 
@@ -502,7 +492,7 @@ document.addEventListener('keyup', (event) => {
 defineProps({
   initialState: {
     type: Object,
-    default: () => null,
+    default: () => null, // Ak nie je odovzdaný stav, použije sa predvolená hodnota
   },
 });
 
@@ -528,6 +518,17 @@ onMounted(() => {
     checkOrientation(); // Skontroluje orientáciu a prispôsobí plátno
     resizeCanvas(); // Zabezpečí správne rozmery plátna
   });
+  if (gameStateStore.level > 0) {
+    currentLevel.value = gameStateStore.level;
+    score.value = gameStateStore.score;
+    lives.value = gameStateStore.lives;
+    loadLevel(currentLevel.value);
+  } else {
+    currentLevel.value = 0;
+    score.value = 0;
+    lives.value = 5;
+    loadLevel(0);
+  }
   // Vytvorenie p5 inštancie
   p5Instance = new p5(sketch, canvasRef.value);
 
@@ -554,8 +555,10 @@ onUnmounted(() => {
 });
 
 const handleClose = () => {
-  console.log('Closing game and saving state...');
-  saveGameState();
+  gameStateStore.level = currentLevel.value;
+  gameStateStore.score = score.value;
+  gameStateStore.lives = lives.value;
+  gameStateStore.saveState(); // Ulož stav
   emit('close'); // Zavolá sa @close na Home.vue
 };
 
