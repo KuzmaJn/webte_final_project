@@ -1,6 +1,11 @@
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from 'vue';
+import App from './App.vue';
+import { createPinia } from 'pinia';
+import router from './router/index.js';
 //import './registerServiceWorker'
-import router from './router/index.js'
+const app = createApp(App);
+const pinia = createPinia();
 
-createApp(App).use(router).mount('#app');
+app.use(pinia); // Pripojenie Pinia k aplikácii
+app.use(router); // Pripojenie routera
+app.mount('#app'); // Mount aplikácie
