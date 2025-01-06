@@ -7,11 +7,13 @@ import {VitePWA} from "vite-plugin-pwa";
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/~xkuzma/space_invaders/',
   plugins: [
     vue(),
     vueDevTools(),
     VitePWA({
       registerType: 'autoUpdate',
+      filename: 'sw.js',
       manifest: {
         name: 'Spaceship vs aliens',
         short_name: 'Spaceship',
@@ -19,7 +21,7 @@ export default defineConfig({
         theme_color: '#222',
         background_color: '#000',
         display: 'standalone',
-        start_url: '/',
+        start_url: '/~xkuzma/space_invaders/',
         icons: [
           {
             src: 'icons/icon-192x192.png',

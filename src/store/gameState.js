@@ -2,9 +2,9 @@ import { defineStore } from 'pinia';
 
 export const useGameStateStore = defineStore('gameState', {
     state: () => ({
-        level: 0,   // Aktuálna úroveň
-        score: 0,   // Skóre
-        lives: 5,   // Počet životov
+        level: 0,
+        score: 0,
+        lives: 5,
     }),
     actions: {
         saveState() {

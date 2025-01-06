@@ -6,6 +6,6 @@ import './registerServiceWorker'
 const app = createApp(App);
 const pinia = createPinia();
 
-app.use(pinia); // Pripojenie Pinia k aplikácii
-app.use(router); // Pripojenie routera
-app.mount('#app'); // Mount aplikácie
+app.use(pinia);
+app.use(router);
+app.mount('#app');

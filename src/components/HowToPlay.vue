@@ -1,6 +1,10 @@
 <script setup>
 import RuleBlock from "@/components/RuleBlock.vue";
 import {ref} from "vue";
+import redAlien from "@/assets/images/red.png";
+import yellowAlien from "@/assets/images/yellow.png";
+import greenAlien from "@/assets/images/green.png";
+import extraAlien from "@/assets/images/extra.png";
 
 const isTooltipVisible = ref(false);
 let timeout;
@@ -24,10 +28,10 @@ const rules = ref([
     title: "Cieľ hry",
     content: `
       <p>Cielom hry je získať čo najviac bodov. <br><b>Bodový systém:</b> <br></p>
-      <p><img src="/src/assets/images/red.png" alt="red_alien"> - 10 bodov</p>
-      <p><img src="/src/assets/images/yellow.png" alt="yellow_alien"> - 20 bodov</p>
-      <p><img src="/src/assets/images/green.png" alt="green_alien"> - 30 bodov</p>
-      <p><img src="/src/assets/images/extra.png" alt="ufo"> - 50 bodov</p>
+      <p><img src="${redAlien}" alt="red_alien"> - 10 bodov</p>
+      <p><img src="${yellowAlien}" alt="yellow_alien"> - 20 bodov</p>
+      <p><img src="${greenAlien}" alt="green_alien"> - 30 bodov</p>
+      <p><img src="${extraAlien}" alt="ufo"> - 50 bodov</p>
     `,
   },
   {
