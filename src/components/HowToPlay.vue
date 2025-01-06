@@ -27,7 +27,7 @@ const rules = ref([
       <p><img src="/src/assets/images/red.png" alt="red_alien"> - 10 bodov</p>
       <p><img src="/src/assets/images/yellow.png" alt="yellow_alien"> - 20 bodov</p>
       <p><img src="/src/assets/images/green.png" alt="green_alien"> - 30 bodov</p>
-      <p><img src="/src/assets/images/extra.png" alt="ufo"> - ? bodov</p>
+      <p><img src="/src/assets/images/extra.png" alt="ufo"> - 50 bodov</p>
     `,
   },
   {

@@ -71,3 +71,70 @@
     border: none;
     cursor: pointer;
 }
+.print-div {
+    display: none; /* Skryje sa na obrazovke */
+}
+/* Štýly pre tlač */
+@media print {
+    /* Základné štýly pre tlač */
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: white !important;
+        color: black !important;
+        font-family: "YourFontFamily", sans-serif; /* Nastav rovnaký font ako v Home.vue */
+        font-size: 14px;
+    }
+
+    /* Nadpis hore v strede */
+    h1 {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 2rem; /* Veľkosť písma, uprav podľa potreby */
+        font-family: "YourFontFamily", sans-serif; /* Rovnaký font ako v aplikácii */
+    }
+    .print-div {
+        display: block; /* Zobrazí sa pri tlači */
+    }
+
+    /* Obsah dole na stránke */
+    .footer {
+        position: fixed;
+        bottom: 10px;
+        width: 100%;
+        text-align: center;
+        font-size: 1rem;
+    }
+
+    /* Skrytie tlačidiel a netlačiteľných častí */
+    .no-print {
+        display: none !important;
+    }
+
+    .enemy {
+        position: absolute;
+        width: 50px; /* Nastav šírku obrázkov */
+        height: auto;
+        filter: blur(3px); /* Rozmazanie nepriateľov */
+        opacity: 0.7; /* Priehľadnosť */
+    }
+
+    /* Pozícia pre každého nepriateľa */
+    .enemy.red {
+        top: 100px; /* Horný ľavý roh */
+        left: 20px;
+    }
+    .enemy.yellow {
+        top: 100px; /* Horný pravý roh */
+        right: 20px;
+    }
+    .enemy.green {
+        bottom: 100px; /* Dolný ľavý roh */
+        left: 20px;
+    }
+    .enemy.extra {
+        bottom: 100px; /* Dolný pravý roh */
+        right: 20px;
+    }
+
+}

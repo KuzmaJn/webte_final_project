@@ -11,9 +11,9 @@ const closeModal = () => {
 </script>
 
 <template>
-<nav class="flex flex-between blur-bg my-padding1">
+<nav class="flex flex-between blur-bg my-padding1 ">
   <router-link class="nav-link my-padding0 main-header" to="/"><h2 class="my-padding0">Spaceship vs aliens</h2></router-link>
-  <button class="hamburger my-padding0" @click="toggleModal">☰</button>
+  <button class="hamburger my-padding0 no-print" @click="toggleModal">☰</button>
   <ul class="flex nav-list desktop-menu">
     <li><router-link class="nav-link my-padding1" to="/">Hraj hru</router-link></li>
     <li><router-link class="nav-link my-padding1" to="/how-to-play">Pravidlá</router-link></li>
@@ -122,4 +122,6 @@ li > a.router-link-active {
     display: flex;
   }
 }
+
+
 </style>
