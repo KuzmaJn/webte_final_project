@@ -73,6 +73,7 @@ const resizeCanvas = () => {
   height = window.innerHeight * 0.9;
   const scaleFactor = Math.min(width / 1920, height / 1080);
 
+  // Ensures the canvas and elements scale proportionally to fit different screen sizes.
   if (p5Instance && typeof p5Instance.resizeCanvas === "function") {
     p5Instance.resizeCanvas(width, height);
   }
@@ -142,7 +143,7 @@ const sketch = (p) => {
   };
 
   p.setup = () => {
-    p.pixelDensity(1); // Zabraňuje rozmazaniu na obrazovkách s vysokým rozlíšením
+    p.pixelDensity(1); // Prevents blurriness on high-DPI screens.
     p.createCanvas(width, height);
     p.frameRate(60);
     loadLevel(currentLevel.value);
@@ -165,16 +166,16 @@ const sketch = (p) => {
       }
       return;
     }
+
     if (levelCompleted.value) {
       p.textAlign(p.CENTER, p.CENTER);
       p.background(0);
       p.textSize(32);
       p.fill(255);
-      p.text(`Úroveň ${currentLevel.value + 1} dokončená!`, p.width / 2, p.height / 2 - 20);
-      p.text(`Pripravte sa na Úroveň ${currentLevel.value + 2}`, p.width / 2, p.height / 2 + 20);
+      p.text(`Level ${currentLevel.value + 1} completed!`, p.width / 2, p.height / 2 - 20);
+      p.text(`Prepare for Level ${currentLevel.value + 2}`, p.width / 2, p.height / 2 + 20);
       return;
     }
-
 
     p.background(0);
 
@@ -203,6 +204,7 @@ const sketch = (p) => {
   };
 
   const drawPlayer = () => {
+    // Draws the player image with scaled dimensions.
     p.image(player.image, player.x, player.y, player.image.width * 2 / 3, player.image.height * 2 / 3);
   };
 
@@ -210,21 +212,20 @@ const sketch = (p) => {
     if (!p._shooting) {
       bullets.push({ x: player.x + (player.image.width * 1 / 3) - 2, y: player.y });
       p._shooting = true;
-      setTimeout(() => (p._shooting = false), 200); // Cooldown 200 ms
-      console.log('Bullet shot:', bullets); // Debug
+      setTimeout(() => (p._shooting = false), 200); // 200ms cooldown between shots.
+      console.log('Bullet shot:', bullets);
     }
   };
+
   const updateBullets = () => {
     for (let i = bullets.length - 1; i >= 0; i--) {
       bullets[i].y -= 8;
 
-      // Check collision with enemies
       for (let j = enemies.length - 1; j >= 0; j--) {
         if (checkCollision(bullets[i], enemies[j])) {
           bullets.splice(i, 1);
           enemies[j].lives--;
 
-          // Ak nepriateľ stratí všetky životy, pridáme body podľa jeho typu
           if (enemies[j].lives <= 0) {
             switch (enemies[j].type) {
               case 'red':
@@ -250,16 +251,15 @@ const sketch = (p) => {
   };
 
   const updateEnemies = () => {
-    // Spracovanie čakajúcich nepriateľov (na základe delay)
+    // Handles pending enemies based on their delay before appearing.
     for (let i = pendingEnemies.length - 1; i >= 0; i--) {
       const pendingEnemy = pendingEnemies[i];
       pendingEnemy.remainingDelay--;
 
       if (pendingEnemy.remainingDelay <= 0) {
-        // Pridaj nepriateľa do aktívnych nepriateľov
         enemies.push({
-          x: Math.random() * (width - 40), // Náhodná horizontálna pozícia
-          y: Math.random() * -500,        // Začína nad obrazovkou
+          x: Math.random() * (width - 40),
+          y: Math.random() * -500,
           speed: pendingEnemy.speed,
           type: pendingEnemy.type,
           lives: pendingEnemy.lives,
@@ -270,34 +270,28 @@ const sketch = (p) => {
           burstTimer: pendingEnemy.type === 'extra' ? 0 : null,
           moveDirection: pendingEnemy.type === 'extra' ? 1 : null,
         });
-        pendingEnemies.splice(i, 1); // Odstráň nepriateľa zo zoznamu čakajúcich
+        pendingEnemies.splice(i, 1);
       }
     }
 
-    // Aktualizácia pohybu a správania aktívnych nepriateľov
     enemies.forEach((enemy, index) => {
       enemy.y += enemy.speed;
 
-      // Pohyb doprava a doľava pre nepriateľov "extra"
       if (enemy.type === 'extra') {
         enemy.x += enemy.moveDirection * 2;
         if (enemy.x <= 0 || enemy.x >= width - 40) {
-          enemy.moveDirection *= -1; // Zmena smeru pohybu
+          enemy.moveDirection *= -1;
         }
 
-        // Streľba zo zásobníka
         if (enemy.shootCooldown === 0) {
           if (enemy.shootCounter < enemy.shootBurst && enemy.burstTimer === 0) {
-            // Vytvor nový projektil
             enemy.projectiles.push({ x: enemy.x + 20, y: enemy.y + 40, speed: 5 });
             enemy.shootCounter++;
-            enemy.burstTimer = 20; // Pauza 20 snímok (približne 0,33 sekundy pri 60 FPS)
+            enemy.burstTimer = 20;
           } else if (enemy.shootCounter >= enemy.shootBurst) {
-            // Ak zásobník vystrieľal, nastav cooldown na 2 sekundy
             enemy.shootCooldown = 120;
             enemy.shootCounter = 0;
           } else {
-            // Znižovanie burstTimer
             enemy.burstTimer--;
           }
         } else {
@@ -305,35 +299,31 @@ const sketch = (p) => {
         }
       }
 
-      // Pohyb a spracovanie projektilov "extra"
       if (enemy.type === 'extra' && enemy.projectiles) {
         enemy.projectiles.forEach((projectile, projIndex) => {
           projectile.y += projectile.speed;
 
-          // Detekcia kolízie s hráčom
           if (
               projectile.x < player.x + 40 &&
               projectile.x + 10 > player.x &&
               projectile.y < player.y + 40 &&
               projectile.y + 10 > player.y
           ) {
-            lives.value -= 1; // Hráč stráca 1 život
-            enemy.projectiles.splice(projIndex, 1); // Odstránenie projektilu
+            lives.value -= 1;
+            enemy.projectiles.splice(projIndex, 1);
 
             if (lives.value <= 0) {
-              alert('Hra skončila! Skúste to znova.');
-              p.noLoop(); // Zastavenie hry
+              alert('Game over! Try again.');
+              p.noLoop();
             }
           }
 
-          // Odstránenie projektilov, ktoré opustia obrazovku
           if (projectile.y > height) {
             enemy.projectiles.splice(projIndex, 1);
           }
         });
       }
 
-      // Ak nepriateľ prejde obrazovkou
       if (enemy.y > height) {
         if (enemy.type === 'red') lives.value -= 1;
         if (enemy.type === 'yellow') lives.value -= 2;
@@ -341,15 +331,14 @@ const sketch = (p) => {
 
         if (lives.value <= 0) {
           gameOver.value = true;
-          gameOverMessage.value = `Prehrali ste! Skóre: ${score.value}, Level: ${currentLevel.value + 1}`;
-          p.noLoop(); // Zastavenie hry
+          gameOverMessage.value = `You lost! Score: ${score.value}, Level: ${currentLevel.value + 1}`;
+          p.noLoop();
         }
 
-        enemies.splice(index, 1); // Odstrániť nepriateľa
+        enemies.splice(index, 1);
       }
     });
   };
-
 
   const drawBullets = () => {
     bullets.forEach((bullet) => {
@@ -364,16 +353,14 @@ const sketch = (p) => {
       let img = getEnemyImage(enemy.type);
       p.image(img, enemy.x, enemy.y, 40, 40);
 
-      // Vykresľovanie projektilov pre "extra"
       if (enemy.type === 'extra' && enemy.projectiles) {
         enemy.projectiles.forEach((projectile) => {
-          p.fill(255, 255, 0); // Žltá farba pre projektily
+          p.fill(255, 255, 0);
           p.noStroke();
           p.ellipse(projectile.x, projectile.y, 10, 10);
         });
       }
     });
-
   };
 
   const checkCollision = (bullet, enemy) => {
@@ -412,8 +399,6 @@ const sketch = (p) => {
     }
   };
 
-
-
   const checkLevelProgress = () => {
     if (enemies.length === 0) {
       levelCompleted.value = true;
@@ -428,48 +413,43 @@ const sketch = (p) => {
         }
         if (currentLevel.value >= levels.length - 1) {
           gameOver.value = true;
-          gameOverMessage.value = `Gratulujeme, dokončili ste všetky úrovne! Skóre: ${score.value}`;
-          p.noLoop(); // Zastavenie hry
+          gameOverMessage.value = `Congratulations, you completed all levels! Score: ${score.value}`;
+          p.noLoop();
         }
-
-      }, 3000); // Pauza na zobrazenie správy
+      }, 3000);
     }
-
   };
-};
-const startGame = () => {
-  gameOver.value = false; // Skryj overlay pre koniec hry
-  gameOverMessage.value = ''; // Vyčisti správu o konci hry
-  score.value = 0; // Inicializuj skóre
-  lives.value = 5; // Počet životov na začiatku
-  enemies = []; // Vyčisti nepriateľov
-  bullets = []; // Vyčisti strely hráča
-  currentLevel.value = 0; // Začiatok od prvého levelu
+};const startGame = () => {
+  gameOver.value = false;
+  gameOverMessage.value = '';
+  score.value = 0;
+  lives.value = 5;
+  enemies = [];
+  bullets = [];
+  currentLevel.value = 0;
 
-  // Načítaj prvý level
   loadLevel(currentLevel.value);
 
-  wasPaused.value = true; // Aktivuj pauzu
-  countdown.value = 3; // Odpočet na 3 sekundy
+  wasPaused.value = true;
+  countdown.value = 3;
 
-  // Obnov p5 slučku
   isPaused.value = false;
   p5Instance.loop();
 };
 
-
 const togglePause = () => {
   if (isPaused.value) {
-    p5Instance.loop(); // Obnoví kreslenie
+    p5Instance.loop(); // Resume the game loop
   } else {
-    p5Instance.noLoop(); // Zastaví kreslenie
+    p5Instance.noLoop(); // Pause the game loop
   }
-  isPaused.value = !isPaused.value; // Prepnúť stav pauzy
+  isPaused.value = !isPaused.value;
 };
+
 document.addEventListener('keydown', (event) => {
   if (event.code === 'Space') {
     if (document.activeElement && document.activeElement.tagName === 'BUTTON') {
-      event.preventDefault(); // Zabraň aktivácii tlačidla, ak je vo fokuse
+      event.preventDefault();
     } else {
       if (!p5Instance._shooting) {
         shootBullet();
@@ -478,10 +458,11 @@ document.addEventListener('keydown', (event) => {
     }
   }
 });
+
 document.addEventListener('keyup', (event) => {
   if (event.code === 'Space') {
     if (p5Instance) {
-      p5Instance._shooting = false; // Reset streľby pri uvoľnení klávesu
+      p5Instance._shooting = false;
     }
   }
 });
@@ -489,7 +470,7 @@ document.addEventListener('keyup', (event) => {
 defineProps({
   initialState: {
     type: Object,
-    default: () => null, // Ak nie je odovzdaný stav, použije sa predvolená hodnota
+    default: () => null,
   },
 });
 
@@ -502,9 +483,10 @@ onMounted(() => {
   enableGyroscope();
   window.addEventListener('deviceorientation', handleDeviceOrientation);
   window.addEventListener('resize', () => {
-    checkOrientation(); // Skontroluje orientáciu a prispôsobí plátno
-    resizeCanvas(); // Zabezpečí správne rozmery plátna
+    checkOrientation(); // Ensures correct canvas adjustments on orientation changes.
+    resizeCanvas();
   });
+
   if (gameStateStore.level > 0) {
     currentLevel.value = gameStateStore.level;
     score.value = gameStateStore.score;
@@ -516,13 +498,14 @@ onMounted(() => {
     lives.value = 5;
     loadLevel(0);
   }
-  // Vytvorenie p5 inštancie
+
+  // Create the p5 instance and attach it to the canvas.
   p5Instance = new p5(sketch, canvasRef.value);
 
-  // Pridanie event listenera na dotykové ovládanie
+  // Add touch control event listener for mobile devices.
   const gameContainer = canvasRef.value;
   if (gameContainer) {
-    console.log('Adding touchstart listener'); // Debug: overenie listenera
+    console.log('Adding touchstart listener');
     gameContainer.addEventListener('touchstart', handleTouchStart);
   }
 });
@@ -533,10 +516,11 @@ onUnmounted(() => {
     p5Instance.remove();
   }
   window.removeEventListener('deviceorientation', handleDeviceOrientation);
-  // Odstránenie event listenera na dotykové ovládanie
+
+  // Remove touch control event listener
   const gameContainer = canvasRef.value;
   if (gameContainer) {
-    console.log('Removing touchstart listener'); // Debug: overenie listenera
+    console.log('Removing touchstart listener');
     gameContainer.removeEventListener('touchstart', handleTouchStart);
   }
 });
@@ -545,21 +529,20 @@ const handleClose = () => {
   gameStateStore.level = currentLevel.value;
   gameStateStore.score = score.value;
   gameStateStore.lives = lives.value;
-  gameStateStore.saveState(); // Ulož stav
-  emit('close'); // Zavolá sa @close na Home.vue
+  gameStateStore.saveState();
+  emit('close');
 };
-
 
 </script>
 <template>
   <div v-if="gameOver" class="game-over-overlay">
     <p>{{ gameOverMessage }}</p>
-    <button @click="startGame">Znova</button>
-    <button @click="$emit('close')">Koniec</button>
+    <button @click="startGame">Retry</button>
+    <button @click="$emit('close')">Exit</button>
   </div>
   <div class="flex flex-between title" id="menu-container">
     <div class="flex flex-column stats">
-      <p id="score">Skóre: {{score}} <br>Životy:{{lives}} </p>
+      <p id="score">Score: {{score}} <br>Lives: {{lives}} </p>
     </div>
     <div class="flex flex-column menu">
       <button class="nav-link icon" @click="togglePause">{{ isPaused ? '▶' : '❚❚' }}</button>
@@ -569,56 +552,46 @@ const handleClose = () => {
           @click="handleClose"
           tabindex="-1">✖
       </button>
-
     </div>
-
   </div>
-
   <div ref="canvasRef" class="flex flex-column game-container" id="game-container"></div>
-
 </template>
 
 <style scoped>@import "@/styles/utils.css";
 
-/* Hlavné nastavenie pre titulok */
 .title {
   position: absolute;
   width: 100vw;
   flex: 0 1 auto;
 }
 
-/* Štýly pre menu */
 .menu {
   justify-content: space-between;
   align-items: initial;
   padding: 1rem;
 }
 
-/* Štýly pre štatistiky */
 .stats {
   padding: 1rem;
   z-index: 1000;
 }
 
-/* Kontajner pre hru */
 .game-container {
   flex: 1 1 auto;
   width: 100vw;
-  height: calc(100vh - 50px); /* Nastav výšku plátna a ponechaj 50px medzeru dole */
+  height: calc(100vh - 50px);
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-  box-sizing: border-box; /* Uisti sa, že padding nevplýva na veľkosť */
+  box-sizing: border-box;
 }
 
-/* Samotné plátno */
 .game-container > canvas {
   display: block;
-  margin: 0 auto; /* Centrovanie plátna */
+  margin: 0 auto;
 }
 
-/* Overlay pre koniec hry */
 .game-over-overlay {
   position: absolute;
   top: 0;
@@ -641,12 +614,12 @@ const handleClose = () => {
   font-size: 18px;
   cursor: pointer;
 }
+
 .nav-link.icon {
   position: relative;
-  z-index: 10; /* Zabezpečí, že tlačidlá budú nad ostatnými elementmi */
+  z-index: 10;
 }
 
-/* Štýly pre režim na výšku */
 @media screen and (orientation: portrait) {
   .game-container {
     background-color: black;
@@ -654,7 +627,7 @@ const handleClose = () => {
   }
 
   .game-container:before {
-    content: 'Prosím, otočte zariadenie na šírku.';
+    content: 'Please rotate your device to landscape mode.';
     display: flex;
     justify-content: center;
     align-items: center;
@@ -670,9 +643,7 @@ const handleClose = () => {
   }
 
   .game-container > canvas {
-    display: none; /* Skry plátno v režime na výšku */
+    display: none;
   }
 }
-
-
 </style>

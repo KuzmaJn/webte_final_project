@@ -4,14 +4,12 @@ import Game from "@/components/Game.vue";
 import { useGameStateStore } from '@/store/gameState';
 
 
-// Stav pre modálne okno a tlačidlo "Pokračovať"
 const isOpen = ref(false);
 const canContinue = ref(false);
 
-// Funkcia pre pokračovanie hry
 const continueGame = () => {
   if (gameStateStore.level > 0) {
-    isOpen.value = true; // Otvorí komponent hry
+    isOpen.value = true;
   } else {
     alert('Nie je uložená žiadna hra na pokračovanie!');
   }
@@ -20,18 +18,13 @@ const continueGame = () => {
 const gameStateStore = useGameStateStore();
 
 const startNewGame = () => {
-  gameStateStore.resetState(); // Reset herného stavu na predvolené hodnoty
-  console.log('Starting a new game:', {
-    level: gameStateStore.level,
-    score: gameStateStore.score,
-    lives: gameStateStore.lives,
-  }); // Debug
+  gameStateStore.resetState();
 
-  isOpen.value = true; // Otvorí komponent hry
+  isOpen.value = true;
   document.body.classList.add('no-scroll');
 };
 
-// Funkcia na získanie herného stavu z localStorage
+
 const getGameState = () => {
   try {
     return JSON.parse(localStorage.getItem('gameState'));
@@ -42,9 +35,8 @@ const getGameState = () => {
 };
 
 const handleGameClose = () => {
-  isOpen.value = false; // Zavrie modálne okno
-  canContinue.value = !!gameStateStore.level; // Aktualizuje stav tlačidla "Pokračovať"
-  console.log('Game closed, canContinue:', canContinue.value); // Debug
+  isOpen.value = false;
+  canContinue.value = !!gameStateStore.level;
 };
 
 
@@ -52,27 +44,22 @@ const handleGameClose = () => {
 onMounted(() => {
   gameStateStore.loadState();
   canContinue.value = !!gameStateStore.level;
-  console.log('Can continue:', canContinue.value); // Debug
 });
 
 </script>
 
 <template>
   <div class="root flex flex-column">
-    <!-- Tlačidlo na spustenie novej hry -->
     <button class="no-print nav-link" @click="startNewGame">Začať hru</button>
 
-    <!-- Tlačidlo na pokračovanie, zobrazí sa len ak existuje uložený stav -->
     <button class="no-print nav-link" v-if="canContinue" @click="continueGame">Pokračovať v hre</button>
 
-    <!-- Informácie o hre -->
     <div v-if="canContinue" class="game-info no-print">
       <p>Úroveň: {{ gameStateStore.level }}</p>
       <p>Skóre: {{ gameStateStore.score }}</p>
       <p>Životy: {{ gameStateStore.lives }}</p>
     </div>
 
-    <!-- Modálne okno pre hru -->
     <teleport to="body">
       <div class="modal flex blur-bg flex-column no-print" v-if="isOpen">
         <game
@@ -83,7 +70,6 @@ onMounted(() => {
     </teleport>
   </div>
 
-  <!-- Div pre tlač -->
   <div class="print-div">
     <h1>Domovská obrazovka</h1>
     <div v-if="canContinue">
@@ -116,7 +102,7 @@ onMounted(() => {
 }
 
 .game-info p {
-  margin: 0 0 5px; /* Oddeľuje jednotlivé riadky */
+  margin: 0 0 5px;
 }
 
 .modal {

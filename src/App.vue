@@ -22,7 +22,6 @@ const closeModal = () => {
   </ul>
 </nav>
 
-<!-- Modálne menu -->
 <transition name="fade">
   <div v-if="isModalOpen" class="modal">
     <div class="flex flex-column blur-bg modal-content" @click="closeModal">
@@ -63,7 +62,7 @@ main{
 }
 
 .main-header {
-  font-size: clamp(1.1em, 4vw, 1.5rem); /* Dynamické prispôsobenie s rem a em */
+  font-size: clamp(1.1em, 4vw, 1.5rem);
 }
 .desktop-menu{
   display: none;

@@ -8,11 +8,9 @@ export const useGameStateStore = defineStore('gameState', {
     }),
     actions: {
         saveState() {
-            // Uloženie stavu do localStorage
             localStorage.setItem('gameState', JSON.stringify(this.$state));
         },
         loadState() {
-            // Načítanie stavu z localStorage
             const savedState = JSON.parse(localStorage.getItem('gameState'));
             if (savedState) {
                 this.level = savedState.level || 0;
@@ -21,7 +19,6 @@ export const useGameStateStore = defineStore('gameState', {
             }
         },
         resetState() {
-            // Reset herného stavu
             this.level = 0;
             this.score = 0;
             this.lives = 5;
