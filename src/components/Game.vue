@@ -12,8 +12,8 @@ import { useGameStateStore } from '@/store/gameState';
 
 const emit = defineEmits(['close']);
 
-let width = window.innerWidth * 3 / 4;
-let height = window.innerHeight;
+let width = window.innerWidth*0.8 ;
+let height = window.innerHeight*0.9;
 let player, enemyRed, enemyYellow, enemyGreen, enemyExtra;
 let enemies = [];
 let currentLevel = ref(0);
@@ -30,9 +30,6 @@ let gameOverMessage = ref('');
 let pendingEnemies = [];
 const gameStateStore = useGameStateStore();
 
-
-
-
 let shootBullet = null; // Globálna referencia na funkciu
 
 const handleDeviceOrientation = (event) => {
@@ -47,8 +44,6 @@ const handleDeviceOrientation = (event) => {
     player.x = Math.max(0, Math.min(player.x, width - 40));
   }
 };
-
-
 
 
 const enableGyroscope = async () => {
@@ -80,7 +75,7 @@ const checkOrientation = () => {
   }
 };
 const detectDevice = () => {
-  const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+  const userAgent = navigator.userAgent || window.opera;
 
   // Kontrola, či ide o mobilné zariadenie
   if (/android|iphone|ipad|ipod|windows phone/i.test(userAgent)) {
@@ -100,7 +95,7 @@ const resizeCanvas = () => {
   // Aktualizácia pozície hráča (stredovanie podľa nových rozmerov)
   if (player) {
     player.x = width / 2 - 30; // Horizontálne stredovanie
-    player.y = height; // Vertikálne umiestnenie
+    player.y = height * 8 / 9; // Vertikálne umiestnenie
   }
 
 };
@@ -344,7 +339,9 @@ const sketch = (p) => {
 
         if (lives.value <= 0) {
           gameOver.value = true;
-          gameOverMessage.value = `Prehrali ste! Skóre: ${score.value}, Level: ${currentLevel.value + 1}`;
+          gameOverMessage.value = `Prehrali ste!\n
+                                   Skóre: ${score.value},\n
+                                   Level: ${currentLevel.value + 1}`;
           p.noLoop(); // Zastavenie hry
         }
 
@@ -421,7 +418,7 @@ const sketch = (p) => {
     if (enemies.length === 0) {
       levelCompleted.value = true;
       wasPaused.value = true;
-
+      bullets = [];
       setTimeout(() => {
         levelCompleted.value = false;
         if (currentLevel.value < levels.length - 1) {
@@ -565,63 +562,39 @@ const handleClose = () => {
 
 </script>
 <template>
-  <div v-if="gameOver" class="game-over-overlay">
-    <p>{{ gameOverMessage }}</p>
-    <button @click="startGame">Znova</button>
-    <button @click="$emit('close')">Koniec</button>
-  </div>
-  <div class="flex flex-between title" id="menu-container">
-    <div class="flex flex-column stats">
-      <p id="score">Skóre: {{score}} <br>Životy:{{lives}} </p>
-    </div>
-    <div class="flex flex-column menu">
-      <button class="nav-link icon" @click="togglePause">{{ isPaused ? '▶' : '❚❚' }}</button>
-      <button class="nav-link icon" @click="startGame">↺</button>
-      <button
-          class="nav-link icon"
-          @click="handleClose"
-          tabindex="-1">✖
-      </button>
+  <div ref="canvasRef" class="flex flex-column game-container" id="game-container">
+    <div class="flex flex-between title" id="menu-container">
+      <div class="flex flex-column stats">
+        <p id="score">Skóre: {{score}} <br>Životy:{{lives}} </p>
+      </div>
+      <div class="flex flex-column menu">
+        <button class="nav-link icon" @click="togglePause">{{ isPaused ? '▶' : '❚❚' }}</button>
+        <button class="nav-link icon" @click="startGame">↺</button>
+        <button
+            class="nav-link icon"
+            @click="handleClose"
+            tabindex="-1">✕
+        </button>
+
+      </div>
 
     </div>
-
+    <div v-if="gameOver" class="flex flex-column game-over-overlay">
+      <p>{{ gameOverMessage }}</p>
+      <button @click="startGame">Znova</button>
+      <button @click="$emit('close')">Koniec</button>
+    </div>
   </div>
-
-  <div ref="canvasRef" class="flex flex-column game-container" id="game-container"></div>
-
 </template>
 
-<style scoped>@import "@/styles/utils.css";
+<style scoped>
+@import "@/styles/utils.css";
 
 /* Hlavné nastavenie pre titulok */
 .title {
   position: absolute;
   width: 100vw;
   flex: 0 1 auto;
-}
-
-/* Štýly pre menu */
-.menu {
-  justify-content: space-between;
-  align-items: initial;
-  padding: 1rem;
-}
-
-/* Štýly pre štatistiky */
-.stats {
-  padding: 1rem;
-}
-
-/* Kontajner pre hru */
-.game-container {
-  flex: 1 1 auto;
-  width: 100vw;
-  height: calc(100vh - 50px); /* Nastav výšku plátna a ponechaj 50px medzeru dole */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  box-sizing: border-box; /* Uisti sa, že padding nevplýva na veľkosť */
 }
 
 /* Samotné plátno */
@@ -632,16 +605,12 @@ const handleClose = () => {
 
 /* Overlay pre koniec hry */
 .game-over-overlay {
-  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  position: absolute;
   background-color: rgba(0, 0, 0, 0.8);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   color: white;
   font-size: 24px;
   z-index: 10;
@@ -682,9 +651,7 @@ const handleClose = () => {
   }
 
   .game-container > canvas {
-    display: none; /* Skry plátno v režime na výšku */
+    display: none;
   }
 }
-
-
 </style>

@@ -29,7 +29,7 @@ h1 {
 }
 
 h2 {
-    font-size: clamp(1.1em, 4vw, 1.5rem);
+    font-size: clamp(1.2em, 4vw, 1.5rem);
 }
 
 h3 {
@@ -37,20 +37,20 @@ h3 {
 }
 
 h4 {
-    font-size: clamp(0.8rem, 3vw, 1.1rem);
+    font-size: clamp(1rem, 3vw, 1.1rem);
 }
 
 h5 {
-    font-size: clamp(0.6rem, 2.5vw, 1rem);
+    font-size: clamp(1rem, 2.5vw, 1rem);
 }
 
 h6 {
-    font-size: clamp(0.5rem, 2vw, 0.9em);
+    font-size: clamp(0.9rem, 2vw, 1em);
 }
 p {
-    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    font-size: clamp(1.2rem, 2.5vw, 1.5rem);
 }
 a {
-    font-size: clamp(1.5rem, 3vw, 1.75rem);
+    font-size: clamp(1.75rem, 3vw, 2.2rem);
 }
 
