@@ -35,10 +35,10 @@ let shootBullet = null; // Globálna referencia na funkciu
 const handleDeviceOrientation = (event) => {
   if (!isMobile.value) return; // Len pre mobilné zariadenia
 
-  const gamma = event.gamma; // Horizontálne nakláňanie (hodnoty: -90 až 90)
+  const beta = event.beta; // Horizontálne nakláňanie (hodnoty: -90 až 90)
   if (player) {
-    const sensitivity = 2; // Nastav rýchlosť posunu hráča
-    player.x += gamma * sensitivity;
+    const sensitivity = 1; // Nastav rýchlosť posunu hráča
+    player.x += beta * sensitivity;
 
     // Zabezpeč, aby hráč neprešiel mimo obrazovku
     player.x = Math.max(0, Math.min(player.x, width - 40));
