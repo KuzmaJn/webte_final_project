@@ -4,7 +4,7 @@ import {ref} from 'vue';
 const isModalOpen = ref(false);
 const toggleModal = () => {
   isModalOpen.value = !isModalOpen.value;
-  document.body.classList.add('no-scroll'); // Zakáže scrollovanie
+  document.body.classList.add('no-scroll');
 };
 const closeModal = () => {
   isModalOpen.value = false;
@@ -102,7 +102,7 @@ li > a.router-link-active {
   color: #82b8ff;
 }
 
-/* Responzívne štýly */
+
 @media (min-width: 768px) {
   .hamburger {
     display: none;
