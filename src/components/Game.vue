@@ -12,8 +12,8 @@ import { useGameStateStore } from '@/store/gameState';
 
 const emit = defineEmits(['close']);
 
-let width = window.innerWidth * 3 / 4;
-let height = window.innerHeight;
+let width = window.innerWidth * 0.8;
+let height = window.innerHeight * 0.9;
 let player, enemyRed, enemyYellow, enemyGreen, enemyExtra;
 let enemies = [];
 let currentLevel = ref(0);
@@ -38,10 +38,10 @@ let shootBullet = null; // Globálna referencia na funkciu
 const handleDeviceOrientation = (event) => {
   if (!isMobile.value) return; // Len pre mobilné zariadenia
 
-  const gamma = event.gamma; // Horizontálne nakláňanie (hodnoty: -90 až 90)
+  const beta = event.beta; // Horizontálne nakláňanie (hodnoty: -90 až 90)
   if (player) {
     const sensitivity = 2; // Nastav rýchlosť posunu hráča
-    player.x += gamma * sensitivity;
+    player.x += beta * sensitivity;
 
     // Zabezpeč, aby hráč neprešiel mimo obrazovku
     player.x = Math.max(0, Math.min(player.x, width - 40));
@@ -99,7 +99,7 @@ const resizeCanvas = () => {
   // Aktualizácia pozície hráča (stredovanie podľa nových rozmerov)
   if (player) {
     player.x = width / 2 - 30; // Horizontálne stredovanie
-    player.y = height; // Vertikálne umiestnenie
+    player.y = height * 8 / 9; // Vertikálne umiestnenie
   }
 
 };
