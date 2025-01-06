@@ -64,9 +64,7 @@ onMounted(() => {
 
     <!-- Tlačidlo na pokračovanie, zobrazí sa len ak existuje uložený stav -->
     <button class="no-print" v-if="canContinue" @click="continueGame">Pokračovať</button>
-    <router-link to="/test-gyro">
-      <button class="no-print">Testovať gyroskop</button>
-    </router-link>
+
     <!-- Informácie o hre -->
     <div v-if="canContinue" class="game-info no-print">
       <p>Úroveň: {{ gameStateStore.level }}</p>

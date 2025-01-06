@@ -67,8 +67,7 @@ const enableGyroscope = async () => {
 const checkOrientation = () => {
   if (isMobile.value) {
     if (window.innerWidth < window.innerHeight) {
-      alert('Prosím, otočte zariadenie na šírku pre lepší zážitok!');
-      // Môžeš použiť CSS alebo pridať overlay na blokovanie hry
+        // Môžeš použiť CSS alebo pridať overlay na blokovanie hry
     } else {
       resizeCanvas(); // Znova prispôsob plátno pri prepnutí na šírku
     }
