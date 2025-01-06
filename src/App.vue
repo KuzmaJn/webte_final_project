@@ -4,9 +4,11 @@ import {ref} from 'vue';
 const isModalOpen = ref(false);
 const toggleModal = () => {
   isModalOpen.value = !isModalOpen.value;
+  document.body.classList.add('no-scroll'); // Zakáže scrollovanie
 };
 const closeModal = () => {
   isModalOpen.value = false;
+  document.body.classList.remove('no-scroll');
 };
 </script>
 
@@ -24,7 +26,7 @@ const closeModal = () => {
 <transition name="fade">
   <div v-if="isModalOpen" class="modal">
     <div class="flex flex-column blur-bg modal-content" @click="closeModal">
-      <button class="close-icon nav-link" @click="closeModal">✖</button>
+      <button class="close-icon nav-link" @click="closeModal">✕</button>
       <ul class="flex flex-column nav-list">
         <li><router-link class="nav-link" to="/" @click="closeModal">Hraj hru</router-link></li>
         <li><router-link class="nav-link" to="/how-to-play" @click="closeModal">Pravidlá</router-link></li>
@@ -40,11 +42,6 @@ const closeModal = () => {
     </transition>
   </router-view>
 </main>
-<footer class="flex">
-  <h5>
-    This is developed using Vue and Vite
-  </h5>
-</footer>
 </template>
 
 <style scoped>
@@ -53,13 +50,6 @@ const closeModal = () => {
 main{
   position: relative;
   flex: 1 1 auto;
-}
-
-footer {
-  text-align: center;
-  background-color: #000;
-  padding:  0 1rem 0 1rem;
-  box-shadow: 0 -2px 4px rgba(255, 255, 255, 0.1);
 }
 
 .fade-enter-active,

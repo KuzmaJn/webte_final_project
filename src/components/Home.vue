@@ -28,6 +28,7 @@ const startNewGame = () => {
   }); // Debug
 
   isOpen.value = true; // Otvorí komponent hry
+  document.body.classList.add('no-scroll');
 };
 
 // Funkcia na získanie herného stavu z localStorage
@@ -101,7 +102,6 @@ onMounted(() => {
 <style scoped>
 @import "@/styles/utils.css";
 
-
 .root {
   position: relative;
 }
@@ -117,7 +117,5 @@ onMounted(() => {
 
 .modal {
   background-color: rgba(0, 0, 0, 0.55);
-  padding: 20px;
-  border-radius: 10px;
 }
 </style>

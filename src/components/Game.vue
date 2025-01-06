@@ -92,46 +92,17 @@ const detectDevice = () => {
 };
 const resizeCanvas = () => {
   // Aktualizácia rozmerov plátna
-  width = window.innerWidth * 0.8;
-  height = window.innerHeight * 0.9;
+  width = window.innerWidth*0.8 ;
+  height = window.innerHeight*0.9;
 
-  // Nastav nové rozmery plátna
-  if (p5Instance && typeof p5Instance.resizeCanvas === "function") {
-    p5Instance.resizeCanvas(width, height);
-  }
 
-  // Výpočet škálovacieho faktoru pre škálovanie
-  const scaleFactor = Math.min(width / 1920, height / 1080);
-
-  // Aktualizácia pozície hráča
+  // Aktualizácia pozície hráča (stredovanie podľa nových rozmerov)
   if (player) {
     player.x = width / 2 - 30; // Horizontálne stredovanie
-
-    // Ak je na mobilnom zariadení, posuň hráča vyššie
-    if (width < 768 || height < 600) { // Šírka alebo výška pre mobilné zariadenia
-      player.y = height * 7 / 9; // Posuň hráča vyššie
-    } else {
-      player.y = height * 8 / 9; // Štandardná pozícia pre väčšie obrazovky
-    }
-
-
-    if (player.image) {
-      player.width = player.image.width * scaleFactor;
-      player.height = player.image.height * scaleFactor;
-    }
+    player.y = height; // Vertikálne umiestnenie
   }
 
-  // Aktualizácia rozmerov nepriateľov
-  if (enemies && Array.isArray(enemies)) {
-    enemies.forEach((enemy) => {
-      if (enemy) {
-        enemy.width = 40 * scaleFactor; // Prispôsobenie šírky
-        enemy.height = 40 * scaleFactor; // Prispôsobenie výšky
-      }
-    });
-  }
 };
-
 
 const handleTouchStart = (event) => {
   if (isMobile.value) {
@@ -583,13 +554,10 @@ onUnmounted(() => {
 });
 
 const handleClose = () => {
-  if (lives.value > 0) {
-    // Ulož stav hry iba ak hráč má životy
-    gameStateStore.level = currentLevel.value;
-    gameStateStore.score = score.value;
-    gameStateStore.lives = lives.value;
-    gameStateStore.saveState(); // Ulož stav hry
-  }
+  gameStateStore.level = currentLevel.value;
+  gameStateStore.score = score.value;
+  gameStateStore.lives = lives.value;
+  gameStateStore.saveState(); // Ulož stav
   emit('close'); // Zavolá sa @close na Home.vue
 };
 
@@ -641,7 +609,6 @@ const handleClose = () => {
 /* Štýly pre štatistiky */
 .stats {
   padding: 1rem;
-  z-index: 1000;
 }
 
 /* Kontajner pre hru */
