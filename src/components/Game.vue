@@ -7,7 +7,7 @@ import Red from '@/assets/images/red.png';
 import Yellow from '@/assets/images/yellow.png';
 import Green from '@/assets/images/green.png';
 import Extra from '@/assets/images/extra.png';
-import levels from '@/assets/levels.json'; // Súbor JSON s informáciami o úrovniach
+import levels from '@/assets/levels.json';
 import { useGameStateStore } from '@/store/gameState';
 
 const emit = defineEmits(['close']);
@@ -24,37 +24,26 @@ const isPaused = ref(false);
 const wasPaused = ref(true);
 const isMobile = ref(false);
 let countdown = ref(3);
-let levelCompleted = ref(false); // Pridaná premenná pre kontrolu dokončenia kola
+let levelCompleted = ref(false);
 let gameOver = ref(false);
 let gameOverMessage = ref('');
 let pendingEnemies = [];
 const gameStateStore = useGameStateStore();
-
-
-
-
-let shootBullet = null; // Globálna referencia na funkciu
+let shootBullet = null;
 
 const handleDeviceOrientation = (event) => {
-  if (!isMobile.value) return; // Len pre mobilné zariadenia
+  if (!isMobile.value) return;
 
-  const beta = event.beta; // Horizontálne nakláňanie (hodnoty: -90 až 90)
+  const beta = event.beta;
   if (player) {
-    const sensitivity = 2; // Nastav rýchlosť posunu hráča
+    const sensitivity = 1;
     player.x += beta * sensitivity;
-
-    // Zabezpeč, aby hráč neprešiel mimo obrazovku
     player.x = Math.max(0, Math.min(player.x, width - 40));
   }
 };
 
-
-
-
 const enableGyroscope = async () => {
   if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-    alert('Requesting gyroscope permission...');
-
     try {
       const permission = await DeviceOrientationEvent.requestPermission();
       if (permission === 'granted') {
@@ -63,55 +52,38 @@ const enableGyroscope = async () => {
         alert('Gyroscope permission denied');
       }
     } catch (error) {
-      alert('Error requesting gyroscope permission: ' + error.message);
     }
-  } else {
-    alert('Gyroscope permission not required or not supported');
   }
 };
 const checkOrientation = () => {
   if (isMobile.value) {
     if (window.innerWidth < window.innerHeight) {
-        // Môžeš použiť CSS alebo pridať overlay na blokovanie hry
+        // TODO blokovanie hry na vysku
     } else {
-      resizeCanvas(); // Znova prispôsob plátno pri prepnutí na šírku
+      resizeCanvas();
     }
   }
 };
 const detectDevice = () => {
   const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-
-  // Kontrola, či ide o mobilné zariadenie
-  if (/android|iphone|ipad|ipod|windows phone/i.test(userAgent)) {
-    isMobile.value = true;
-    alert('Používate mobilné zariadenie!');
-  } else {
-    isMobile.value = false;
-    alert('Používate desktopové zariadenie!');
-  }
+  isMobile.value = /android|iphone|ipad|ipod|windows phone/i.test(userAgent);
 };
 const resizeCanvas = () => {
-  // Aktualizácia rozmerov plátna
   width = window.innerWidth * 0.8;
   height = window.innerHeight * 0.9;
+  const scaleFactor = Math.min(width / 1920, height / 1080);
 
-  // Nastav nové rozmery plátna
   if (p5Instance && typeof p5Instance.resizeCanvas === "function") {
     p5Instance.resizeCanvas(width, height);
   }
 
-  // Výpočet škálovacieho faktoru pre škálovanie
-  const scaleFactor = Math.min(width / 1920, height / 1080);
-
-  // Aktualizácia pozície hráča
   if (player) {
-    player.x = width / 2 - 30; // Horizontálne stredovanie
+    player.x = width / 2 - 30;
 
-    // Ak je na mobilnom zariadení, posuň hráča vyššie
-    if (width < 768 || height < 600) { // Šírka alebo výška pre mobilné zariadenia
-      player.y = height * 7 / 9; // Posuň hráča vyššie
+    if (width < 768 || height < 600) {
+      player.y = height * 7 / 9;
     } else {
-      player.y = height * 8 / 9; // Štandardná pozícia pre väčšie obrazovky
+      player.y = height * 8 / 9;
     }
 
     if (player.image) {
@@ -120,18 +92,22 @@ const resizeCanvas = () => {
     }
   }
 
-  // Aktualizácia rozmerov nepriateľov
   if (enemies && Array.isArray(enemies)) {
     enemies.forEach((enemy) => {
       if (enemy) {
-        enemy.width = 40 * scaleFactor; // Prispôsobenie šírky
-        enemy.height = 40 * scaleFactor; // Prispôsobenie výšky
+        enemy.width = 40 * scaleFactor;
+        enemy.height = 40 * scaleFactor;
       }
     });
   }
 };
 
 
+const handleTouchStart = (event) => {
+  if (isMobile.value) {
+    shootBullet();
+  }
+};
 
 
 const loadLevel = (levelIndex) => {
@@ -140,18 +116,18 @@ const loadLevel = (levelIndex) => {
   const level = levels[levelIndex];
   level.enemies.forEach((enemyConfig) => {
     pendingEnemies.push({
-      x: Math.random() * (width - 40), // Náhodná pozícia v rámci hraníc
-      y: Math.random() * -500,        // Náhodná vertikálna pozícia nad obrazovkou
+      x: Math.random() * (width - 40),
+      y: Math.random() * -500,
       speed: enemyConfig.speed,
       remainingDelay: enemyConfig.delay,
       type: enemyConfig.type,
-      lives: enemyConfig.type === 'green' ? 3 : 1, // Zelený má 3 životy, ostatní 1
-      projectiles: enemyConfig.type === 'extra' ? [] : null, // Projektily pre "extra"
-      shootCooldown: enemyConfig.type === 'extra' ? 0 : null, // Cooldown pre streľbu
-      shootBurst: enemyConfig.type === 'extra' ? 3 : null, // Počet projektilov na zásobník
-      shootCounter: enemyConfig.type === 'extra' ? 0 : null, // Počet vystrelených projektilov
-      moveDirection: enemyConfig.type === 'extra' ? 1 : null, // Smer pohybu (1 = doprava, -1 = doľava)
-      burstTimer: enemyConfig.type === 'extra' ? 20 : null, // Pauza medzi výstrelmi (v snímkach)
+      lives: enemyConfig.type === 'green' ? 3 : 1,
+      projectiles: enemyConfig.type === 'extra' ? [] : null,
+      shootCooldown: enemyConfig.type === 'extra' ? 0 : null,
+      shootBurst: enemyConfig.type === 'extra' ? 3 : null,
+      shootCounter: enemyConfig.type === 'extra' ? 0 : null,
+      moveDirection: enemyConfig.type === 'extra' ? 1 : null,
+      burstTimer: enemyConfig.type === 'extra' ? 20 : null,
     });
   });
 };
@@ -442,7 +418,7 @@ const sketch = (p) => {
     if (enemies.length === 0) {
       levelCompleted.value = true;
       wasPaused.value = true;
-
+      bullets = [];
       setTimeout(() => {
         levelCompleted.value = false;
         if (currentLevel.value < levels.length - 1) {
@@ -520,19 +496,9 @@ defineProps({
 const canvasRef = ref(null);
 let p5Instance = null;
 
-
-const testGyroscopeSupport = () => {
-  if ('DeviceOrientationEvent' in window) {
-    alert('DeviceOrientationEvent is supported');
-  } else {
-    alert('DeviceOrientationEvent is NOT supported');
-  }
-};
-
 onMounted(() => {
   detectDevice();
   resizeCanvas();
-  testGyroscopeSupport()
   enableGyroscope();
   window.addEventListener('deviceorientation', handleDeviceOrientation);
   window.addEventListener('resize', () => {

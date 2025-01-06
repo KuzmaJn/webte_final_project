@@ -58,12 +58,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="root">
+  <div class="root flex flex-column">
     <!-- Tlačidlo na spustenie novej hry -->
-    <button class="no-print" @click="startNewGame">Hraj hru</button>
+    <button class="no-print nav-link" @click="startNewGame">Začať hru</button>
 
     <!-- Tlačidlo na pokračovanie, zobrazí sa len ak existuje uložený stav -->
-    <button class="no-print" v-if="canContinue" @click="continueGame">Pokračovať</button>
+    <button class="no-print nav-link" v-if="canContinue" @click="continueGame">Pokračovať v hre</button>
 
     <!-- Informácie o hre -->
     <div v-if="canContinue" class="game-info no-print">
@@ -103,12 +103,16 @@ onMounted(() => {
 @import "@/styles/utils.css";
 
 .root {
-  position: relative;
+  max-width: 28rem;
+  position: relative;width: 80vw;
+  height: 60vh;
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 0.5rem;
 }
 .game-info {
   margin-top: 10px;
   font-size: 14px;
-  color: #666;
+  color: #ffffff;
 }
 
 .game-info p {
@@ -117,5 +121,16 @@ onMounted(() => {
 
 .modal {
   background-color: rgba(0, 0, 0, 0.55);
+}
+
+button.nav-link{
+  font-family: "VT-Regular", sans-serif;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: block;
+  font-size: 1.5rem;
+  color: white;
+  cursor: pointer;
+  margin: 0.5rem;
+  padding: 0.3rem;
 }
 </style>
